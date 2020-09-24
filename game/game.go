@@ -22,7 +22,7 @@ type State struct {
 	// NextCreep is a type of the next creep.
 	// Next creep is encountered after the current creep is defeated.
 	// If there is no next creep, a special type CreepNone indicates that.
-	NextCreep string
+	NextCreep CreepType
 
 	// Deck is your cards collection.
 	// It's keyed by a card type, like CardAttack.
