@@ -1,0 +1,55 @@
+* {
+    font-family: Roboto;
+}
+
+.unit {
+    width: 120px;
+    height: 120px;
+    border: 1px solid black;
+}
+
+#infobox {
+    width: 640px;
+    height: 128px;
+    border: 1px solid black;
+}
+
+.log-bad {
+    color: rgb(158, 38, 38);
+}
+.log-good {
+    color: rgb(65, 182, 55);
+}
+
+textarea,
+pre {
+    -moz-tab-size : 2;
+    -o-tab-size : 2;
+    tab-size : 2;
+}
+#code-block {
+    height: 584px;
+    width: 584px;
+    border: 1px solid #7387a7;
+    padding: 8px;
+}
+#code-editor {
+    overflow: scroll;
+    width: 100%;
+}
+.code {
+    font-family: monospace;
+    font-size: large;
+}
+.noedit {
+    color: #7387a7;
+}
+.block {
+    outline: none;
+    border-color: transparent;
+    resize: none;
+    overflow: visible;
+    height: 100%;
+    padding: 0;
+    white-space: pre;
+}
