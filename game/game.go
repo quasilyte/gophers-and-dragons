@@ -19,9 +19,9 @@ type State struct {
 	// Creep is an information about your current opponent status.
 	Creep CreepStatus
 
-	// NextCreep is a name of the next creep.
+	// NextCreep is a type of the next creep.
 	// Next creep is encountered after the current creep is defeated.
-	// If there is no next creep, a special string "none" indicates that.
+	// If there is no next creep, a special type CreepNone indicates that.
 	NextCreep string
 
 	// Deck is your cards collection.
@@ -31,7 +31,8 @@ type State struct {
 
 // CreepStatus is a creep status information.
 type CreepStatus struct {
-	HP int
+	Type CreepType
+	HP   int
 }
 
 // AvatarStatus is a hero status information.
@@ -68,4 +69,17 @@ const (
 	CardMagicArrow
 	CardRetreat
 	CardRest
+)
+
+// CreepType is an enum-like type for creeps.
+type CreepType int
+
+// All creep types.
+const (
+	CreepNone CreepType = iota
+	CreepCheepy
+	CreepLion
+	CreepFairy
+	CreepMummy
+	CreepDragon
 )
