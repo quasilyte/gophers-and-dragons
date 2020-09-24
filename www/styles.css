@@ -14,11 +14,14 @@
     border: 1px solid black;
 }
 
-.log-bad {
+.text-bad {
     color: rgb(158, 38, 38);
 }
-.log-good {
+.text-good {
     color: rgb(65, 182, 55);
+}
+.text-magic {
+    color: blueviolet;
 }
 
 textarea,
