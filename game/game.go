@@ -47,6 +47,7 @@ type Card struct {
 	Type CardType
 
 	// Count tells how many such cards you have.
+	// -1 means "unlimited".
 	Count int
 
 	// MP is a card mana cost per usage.
