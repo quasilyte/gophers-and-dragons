@@ -25,7 +25,7 @@ namespace App {
         elements.avatar.hp.innerHTML = `${AVATAR_MAX_HP}/${AVATAR_MAX_HP}`;
         elements.avatar.mp.innerHTML = `${AVATAR_MAX_MP}/${AVATAR_MAX_MP}`;
 
-        let avatarID = urlParams.get("avatar") || rand(5);
+        let avatarID = urlParams.get('avatar') || rand(5);
         let avatarURL = `img/avatar/avatar${avatarID}.png`;
         elements.avatar.pic.innerHTML = `<img class="unit" src="${avatarURL}">`
     }
