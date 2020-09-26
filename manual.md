@@ -95,7 +95,7 @@ Cards that need to be obtained before becoming available:
 | Lion | 10 | 2-3 || 6 | 1 |
 | Fairy | 9 | 4-5 | Ranged | 11 | 2 |
 | Mummy | 18 | 3-4 | WeakToFire, Slow | 15 | 3 |
-| Dragon | 30 | 5-6 | MagicImmunity | 35 | 5 |
+| Dragon | 30 | 5-6 | MagicImmunity | 35 | 0 |
 
 ## Creep traits
 

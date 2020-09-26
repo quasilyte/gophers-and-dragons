@@ -54,7 +54,7 @@ var creeps = map[game.CreepType]game.CreepStats{
 		MaxHP:       30,
 		Damage:      game.IntRange{5, 6},
 		ScoreReward: 35,
-		CardsReward: 5,
+		CardsReward: 0,
 		Traits: []game.CreepTrait{
 			game.TraitMagicImmunity,
 		},
