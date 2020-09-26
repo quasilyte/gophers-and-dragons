@@ -208,11 +208,17 @@ export function main() {
 
         elements.creep.pic.onmouseenter = function(e) {
             let currentCreep = elements.creep.name.innerText;
+            if (currentCreep === 'None') {
+                return;
+            }
             let creepStats = getCreepStats(currentCreep);
             renderCreepDetails(currentCreep, creepStats);
         };
         elements.nextCreep.pic.onmouseenter = function(e) {
             let nextCreep = elements.nextCreep.name.innerText;
+            if (nextCreep === 'None') {
+                return;
+            }
             let creepStats = getCreepStats(nextCreep);
             renderCreepDetails(nextCreep, creepStats);
         };
@@ -333,7 +339,7 @@ export function main() {
             }
         }, interval);
     }
-    
+
     loadGo(initGame);
 }
 
