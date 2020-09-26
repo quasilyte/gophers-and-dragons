@@ -10,6 +10,11 @@ type State struct {
 	// Note that round number starts with one, not zero.
 	Round int
 
+	// RoundTurn is a round-local turn number.
+	// If it's 1, then it's a first turn in the round.
+	// Note that round turn number starts with one, not zero.
+	RoundTurn int
+
 	// Score is your current game score.
 	Score int
 

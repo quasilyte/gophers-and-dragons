@@ -41,7 +41,6 @@ type runner struct {
 	chooseCard    func(game.State) game.CardType
 	peekableCards []game.CardType
 	badMoves      int
-	roundTurns    int
 }
 
 func newRunner(config *Config, chooseCard func(game.State) game.CardType) *runner {
@@ -61,7 +60,7 @@ func (r *runner) Run() []simstep.Action {
 			r.emitRedLogf("Game over: too many illegal moves!")
 			break
 		}
-		if r.roundTurns >= 50 {
+		if r.state.RoundTurn >= 50 {
 			r.emitRedLogf("Game over: round lasted for too long!")
 			break
 		}
@@ -333,7 +332,7 @@ func (r *runner) runTurn() bool {
 
 func (r *runner) nextRound() {
 	r.state.Round++
-	r.roundTurns = 0
+	r.state.RoundTurn = 0
 
 	r.state.Creep = newCreep(r.state.NextCreep)
 	r.state.NextCreep = r.peekCreep(r.state.Round + 1)
@@ -362,7 +361,7 @@ func (r *runner) beginTurn() {
 
 func (r *runner) endTurn() {
 	r.state.Turn++
-	r.roundTurns++
+	r.state.RoundTurn++
 	r.out = append(r.out, simstep.Wait{})
 }
 
