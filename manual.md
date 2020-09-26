@@ -91,7 +91,7 @@ Cards that need to be obtained before becoming available:
 |---|---|---|---|---|---|
 | Cheepy | 4 | 1-4 | Coward | 3 | 1 |
 | Imp | 5 | 3-4 || 5 | 1 |
-| Lion | 10 | 2-3 || 6 | 1 |
+| Lion | 10 | 2-3 || 6 | 2 |
 | Fairy | 9 | 4-5 | Ranged | 11 | 2 |
 | Mummy | 18 | 3-4 | WeakToFire, Slow | 15 | 3 |
 | Dragon | 30 | 5-6 | MagicImmunity | 35 | 0 |
