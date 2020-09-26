@@ -36,21 +36,20 @@ import "github.com/quasilyte/gophers-and-dragons/game"
 
 func ChooseCard(s game.State) game.CardType {
 	if s.Avatar.HP < 10 {
-    // If have a Heal card and enough MP to cast it, use it.
-    if s.Can(game.CardHeal) {
-      return game.CardHeal
-    }
+		// If have a Heal card and enough MP to cast it, use it.
+		if s.Can(game.CardHeal) {
+			return game.CardHeal
+		}
 		return game.CardRetreat // Otherwise run away
 	}
 
-
-  // Fight only weak monsters and run away from everything else.
-  switch s.Creep.Type {
-  case game.CreepCheepy, game.CreepImp, game.CreepLion:
-    return game.CardAttack
-  default:
-    return game.CardRetreat
-  }
+	// Fight only weak monsters and run away from everything else.
+	switch s.Creep.Type {
+	case game.CreepCheepy, game.CreepImp, game.CreepLion:
+		return game.CardAttack
+	default:
+		return game.CardRetreat
+	}
 }
 ```
 
