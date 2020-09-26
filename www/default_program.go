@@ -14,7 +14,7 @@ func tactic1(s game.State) game.CardType {
 }
 
 // tactic2 will only fight with the easiest kind of
-// monsters and will route if wounded.
+// monsters and will run away if wounded.
 func tactic2(s game.State) game.CardType {
 	if s.Avatar.HP < 10 {
 		return game.CardRetreat
