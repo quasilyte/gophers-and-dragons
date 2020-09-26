@@ -56,6 +56,14 @@ func ChooseCard(s game.State) game.CardType {
 
 The [game](https://github.com/quasilyte/gophers-and-dragons/blob/master/game/game.go) package contains most information that you'll need while writing your own tactic.
 
+## Controls
+
+| Name | Description |
+|---|---|
+| Run button | Start the tactic simulation |
+| Pause/Resume button | Switch between pause/running modes in simulation; bound to space key |
+| Speed select | Adjust the simulation running speed |
+
 ## Cards
 
 Cards that have no usage limit:
