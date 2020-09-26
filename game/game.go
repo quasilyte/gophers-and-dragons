@@ -53,8 +53,10 @@ type Creep struct {
 	CreepStats
 }
 
+// IsFull reports whether creep health is full.
 func (c *Creep) IsFull() bool { return c.HP == c.MaxHP }
 
+// IsStunned reports whether creep is currently stunned.
 func (c *Creep) IsStunned() bool { return c.Stun > 0 }
 
 // CreepStats is a set of creep statistics.
@@ -84,6 +86,7 @@ type Card struct {
 	CardStats
 }
 
+// CardStats is a set of card statistics.
 type CardStats struct {
 	// MP is a card mana cost per usage.
 	MP int
@@ -148,8 +151,10 @@ const (
 	CreepDragon
 )
 
+// CreepTraitList is convenience wrapper over a slice of creep traits.
 type CreepTraitList []CreepTrait
 
+// Has reports whether a creep trait list contains the specified trait.
 func (list CreepTraitList) Has(x CreepTrait) bool {
 	for _, trait := range list {
 		if trait == x {
@@ -159,6 +164,7 @@ func (list CreepTraitList) Has(x CreepTrait) bool {
 	return false
 }
 
+// CreepTrait is an enum-like type for creep special traits.
 type CreepTrait int
 
 // All creep traits.
