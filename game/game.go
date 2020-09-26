@@ -19,7 +19,7 @@ type State struct {
 	Score int
 
 	// Avatar contains information about your hero status.
-	Avatar AvatarStatus
+	Avatar Avatar
 
 	// Creep is an information about your current opponent.
 	Creep Creep
@@ -68,10 +68,17 @@ type CreepStats struct {
 	Traits      CreepTraitList
 }
 
-// AvatarStatus is a hero status information.
-type AvatarStatus struct {
+// Avatar is a hero status information.
+type Avatar struct {
 	HP int
 	MP int
+	AvatarStats
+}
+
+// AvatarStats is a set of avatar statistics.
+type AvatarStats struct {
+	MaxHP int
+	MaxMP int
 }
 
 // Card is a hero deck card information.

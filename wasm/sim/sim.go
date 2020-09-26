@@ -22,12 +22,17 @@ func Run(config *Config, chooseCard func(game.State) game.CardType) []simstep.Ac
 }
 
 func newGameState(config *Config) *game.State {
+	avatarStats := game.AvatarStats{
+		MaxHP: config.AvatarHP,
+		MaxMP: config.AvatarMP,
+	}
 	return &game.State{
 		Round: 1,
 		Turn:  1,
-		Avatar: game.AvatarStatus{
-			HP: config.AvatarHP,
-			MP: config.AvatarMP,
+		Avatar: game.Avatar{
+			HP:          avatarStats.MaxHP,
+			MP:          avatarStats.MaxMP,
+			AvatarStats: avatarStats,
 		},
 		Deck: make(map[game.CardType]game.Card),
 	}
