@@ -7,7 +7,7 @@ Cards that have no usage limit:
 | Name | Effect | MP |
 |---|---|---|
 | Attack | Deal 2-4 damage | 0 |
-| MagicArrow | Deal 3 magic damage | 0 |
+| MagicArrow | Deal 3 **magic** damage | 0 |
 | Retreat | Skip the current creep; you take a hit from it, unless it's **slow** | 0 |
 | Rest | Recover 3 HP | 2 |
 
@@ -18,7 +18,7 @@ Cards that need to be obtained before becoming available:
 |---|---|---|
 | PowerAttack | Deal 4-5 damage | 0 |
 | Stun | Enemy skips 2 turns | 0 |
-| Firebolt | Deal 4-6 fire magic damage | 0 |
+| Firebolt | Deal 4-6 **fire magic** damage | 0 |
 | Heal | Recover 10-15 HP | 4 |
 | Parry | Reflect the next enemy attack back to itself, unless it's **ranged** | 0 |
 
