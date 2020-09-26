@@ -16,8 +16,8 @@ type State struct {
 	// Avatar contains information about your hero status.
 	Avatar AvatarStatus
 
-	// Creep is an information about your current opponent status.
-	Creep CreepStatus
+	// Creep is an information about your current opponent.
+	Creep Creep
 
 	// NextCreep is a type of the next creep.
 	// Next creep is encountered after the current creep is defeated.
@@ -29,10 +29,36 @@ type State struct {
 	Deck map[CardType]Card
 }
 
-// CreepStatus is a creep status information.
-type CreepStatus struct {
+// Can reports whether it's legal to do a cardType move.
+func (st *State) Can(cardType CardType) bool {
+	if st.Deck[cardType].Count == 0 {
+		return false // Card is unavailable
+	}
+	if st.Avatar.MP < st.Deck[cardType].MP {
+		return false // Not enougn mana
+	}
+	return true
+}
+
+// Creep is a particular creep information.
+type Creep struct {
 	Type CreepType
 	HP   int
+	Stun int
+	CreepStats
+}
+
+func (c *Creep) IsFull() bool { return c.HP == c.MaxHP }
+
+func (c *Creep) IsStunned() bool { return c.Stun > 0 }
+
+// CreepStats is a set of creep statistics.
+type CreepStats struct {
+	MaxHP       int
+	Damage      IntRange
+	ScoreReward int
+	CardsReward int
+	Traits      CreepTraitList
 }
 
 // AvatarStatus is a hero status information.
@@ -50,37 +76,92 @@ type Card struct {
 	// -1 means "unlimited".
 	Count int
 
+	CardStats
+}
+
+type CardStats struct {
 	// MP is a card mana cost per usage.
 	MP int
 
 	// IsMagic tells whether this card effect is considered to be magical.
 	IsMagic bool
 
+	// Effect is a description-like string that explains the Power field meaning.
+	Effect string
+
+	// Power is a spell effectiveness.
+	// For offensive spells, it's the damage they deal.
+	// For other spells it can mean different things (see Effect field).
+	Power IntRange
+
 	// IsOffensive tells whether this card targets enemy.
 	// If it's not, it either targets you or has some special effect like "Retreat".
 	IsOffensive bool
 }
 
+// IntRange is an inclusive integer range from Low() to High().
+type IntRange [2]int
+
+func (rng IntRange) Low() int     { return rng[0] }
+func (rng IntRange) High() int    { return rng[1] }
+func (rng IntRange) IsZero() bool { return rng.Low() == 0 && rng.High() == 0 }
+
 // CardType is an enum-like type for cards.
 type CardType int
 
 // All card types.
+//go:generate stringer -type=CardType -trimprefix=Card
 const (
+	// Infinite cards.
+
 	CardAttack CardType = iota
 	CardMagicArrow
 	CardRetreat
 	CardRest
+
+	// Cards that need to be obtained during the gameplay.
+
+	CardPowerAttack
+	CardFirebolt
+	CardStun
+	CardHeal
+	CardParry
 )
 
 // CreepType is an enum-like type for creeps.
 type CreepType int
 
 // All creep types.
+//go:generate stringer -type=CreepType -trimprefix=Creep
 const (
 	CreepNone CreepType = iota
 	CreepCheepy
+	CreepImp
 	CreepLion
 	CreepFairy
 	CreepMummy
 	CreepDragon
+)
+
+type CreepTraitList []CreepTrait
+
+func (list CreepTraitList) Has(x CreepTrait) bool {
+	for _, trait := range list {
+		if trait == x {
+			return true
+		}
+	}
+	return false
+}
+
+type CreepTrait int
+
+// All creep traits.
+//go:generate stringer -type=CreepTrait -trimprefix=Trait
+const (
+	TraitCoward CreepTrait = iota
+	TraitMagicImmunity
+	TraitWeakToFire
+	TraitSlow
+	TraitRanged
 )
