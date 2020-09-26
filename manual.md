@@ -36,25 +36,24 @@ import "github.com/quasilyte/gophers-and-dragons/game"
 
 func ChooseCard(s game.State) game.CardType {
 	if s.Avatar.HP < 10 {
-    // If have a Heal card and enough MP to cast it, use it.
-    if s.Can(game.CardHeal) {
-      return game.CardHeal
-    }
+		// If have a Heal card and enough MP to cast it, use it.
+		if s.Can(game.CardHeal) {
+			return game.CardHeal
+		}
 		return game.CardRetreat // Otherwise run away
 	}
 
-
-  // Fight only weak monsters and run away from everything else.
-  switch s.Creep.Type {
-  case game.CreepCheepy, game.CreepImp, game.CreepLion:
-    return game.CardAttack
-  default:
-    return game.CardRetreat
-  }
+	// Fight only weak monsters and run away from everything else.
+	switch s.Creep.Type {
+	case game.CreepCheepy, game.CreepImp, game.CreepLion:
+		return game.CardAttack
+	default:
+		return game.CardRetreat
+	}
 }
 ```
 
-The [game](https://github.com/quasilyte/gophers-and-dragons/blob/master/game/game.go) package contains most information that you'll need while writing your own tactic.
+The [game](https://godoc.org/github.com/quasilyte/gophers-and-dragons/game) package contains most information that you'll need while writing your own tactic.
 
 ## Controls
 
@@ -71,7 +70,7 @@ Cards that have no usage limit:
 | Name | Effect | MP |
 |---|---|---|
 | Attack | Deal 2-4 damage | 0 |
-| MagicArrow | Deal 3 **magic** damage | 0 |
+| MagicArrow | Deal 3 **magic** damage | 1 |
 | Retreat | Skip the current creep; you take a hit from it, unless it's **slow** | 0 |
 | Rest | Recover 3 HP | 2 |
 
@@ -82,7 +81,7 @@ Cards that need to be obtained before becoming available:
 |---|---|---|
 | PowerAttack | Deal 4-5 damage | 0 |
 | Stun | Enemy skips 2 turns | 0 |
-| Firebolt | Deal 4-6 **fire magic** damage | 0 |
+| Firebolt | Deal 4-6 **fire magic** damage | 3 |
 | Heal | Recover 10-15 HP | 4 |
 | Parry | Reflect the next enemy attack back to itself, unless it's **ranged** | 0 |
 
@@ -92,7 +91,7 @@ Cards that need to be obtained before becoming available:
 |---|---|---|---|---|---|
 | Cheepy | 4 | 1-4 | Coward | 3 | 1 |
 | Imp | 5 | 3-4 || 5 | 1 |
-| Lion | 10 | 2-3 || 6 | 1 |
+| Lion | 10 | 2-3 || 6 | 2 |
 | Fairy | 9 | 4-5 | Ranged | 11 | 2 |
 | Mummy | 18 | 3-4 | WeakToFire, Slow | 15 | 3 |
 | Dragon | 30 | 5-6 | MagicImmunity | 35 | 0 |
