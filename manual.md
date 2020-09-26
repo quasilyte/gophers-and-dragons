@@ -54,7 +54,7 @@ func ChooseCard(s game.State) game.CardType {
 }
 ```
 
-The [game](https://github.com/quasilyte/gophers-and-dragons/blob/master/game/game.go) package contains most information that you'll need while writing your own tactic.
+The [game](https://godoc.org/github.com/quasilyte/gophers-and-dragons/game) package contains most information that you'll need while writing your own tactic.
 
 ## Controls
 
