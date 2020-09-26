@@ -1,5 +1,61 @@
 # Gophers & Dragons manual
 
+## Basics
+
+In order to pass the game you need to survive all **rounds**.
+
+A **round** is an encounter with a single **creep**.
+
+Your avatar is controlled by a code snipped that we'll call a **tactic**.
+
+A **tactic** must provide `ChooseCard(s game.State) game.CardType` function. That function is called for every **turn**.
+
+The following tactic is a minimal solution for this (don't expect to get a high **score** with it):
+
+```go
+package tactic
+
+import "github.com/quasilyte/gophers-and-dragons/game"
+
+func ChooseCard(s game.State) game.CardType {
+	return game.CardRetreat
+}
+```
+
+How to earn **score**:
+
+1. Defeat creeps.
+2. Survive all rounds and get a survival bonus.
+
+So, a better tactic actually tries to fight some monsters.
+
+```go
+package tactic
+
+import "github.com/quasilyte/gophers-and-dragons/game"
+
+func ChooseCard(s game.State) game.CardType {
+	if s.Avatar.HP < 10 {
+    // If have a Heal card and enough MP to cast it, use it.
+    if s.Can(game.CardHeal) {
+      return game.CardHeal
+    }
+		return game.CardRetreat // Otherwise run away
+	}
+
+
+  // Fight only weak monsters and run away from everything else.
+  switch s.Creep.Type {
+  case game.CreepCheepy, game.CreepImp, game.CreepLion:
+    return game.CardAttack
+  default:
+    return game.CardRetreat
+  }
+}
+```
+
+The [game](https://github.com/quasilyte/gophers-and-dragons/blob/master/game/game.go) package contains most information that you'll need while writing your own tactic.
+
 ## Cards
 
 Cards that have no usage limit:
