@@ -66,6 +66,7 @@ func (r *runner) Run() []simstep.Action {
 			break
 		}
 		if r.state.Round > r.config.Rounds {
+			r.out = append(r.out, simstep.Victory{})
 			break
 		}
 		stop := r.runTurn()

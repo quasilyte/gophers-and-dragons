@@ -117,6 +117,7 @@ export function main() {
         for (const key in elements.status) {
             elements.status[key].innerText = '0';
         }
+        elements.status.score.classList.remove('text-green');
         // Reset hero.
         elements.avatar.hp.innerText = `${AVATAR_MAX_HP}`;
         elements.avatar.mp.innerText = `${AVATAR_MAX_MP}`;
@@ -273,6 +274,9 @@ export function main() {
     }
 
     const handlers = {
+        victory: function() {
+            elements.status.score.classList.add('text-green');
+        },
         defeat: function() {
             elements.avatar.pic.src = `img/dead_avatar/avatar${AVATAR_ID}.png`;
         },

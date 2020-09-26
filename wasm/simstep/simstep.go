@@ -4,6 +4,12 @@ type Action interface {
 	Fields() []interface{}
 }
 
+type Victory struct{}
+
+func (a Victory) Fields() []interface{} {
+	return []interface{}{"victory"}
+}
+
 type Defeat struct{}
 
 func (a Defeat) Fields() []interface{} {
