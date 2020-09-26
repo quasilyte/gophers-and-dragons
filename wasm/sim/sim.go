@@ -66,7 +66,7 @@ func (r *runner) Run() []simstep.Action {
 			break
 		}
 		if r.state.Round > r.config.Rounds {
-			r.out = append(r.out, simstep.Victory{})
+			r.victory()
 			break
 		}
 		stop := r.runTurn()
@@ -75,6 +75,14 @@ func (r *runner) Run() []simstep.Action {
 		}
 	}
 	return r.out
+}
+
+func (r *runner) victory() {
+	r.out = append(r.out, simstep.Victory{})
+
+	bonus := r.state.Avatar.HP
+	r.out = append(r.out, simstep.UpdateScore{Delta: bonus})
+	r.emitGreenLogf("Got %d survival bonus points", bonus)
 }
 
 func (r *runner) initWorld() {

@@ -6,8 +6,9 @@
 <div id="banner">
     <div id="head" itemprop="name">Gophers & Dragons</div>
 
-    <input id="button_run" type="button" value="Run" style="width: 96px">
-    <input id="button_pause" type="button" value="Pause" style="width: 96px">
+    <input title="Run simulation from the beginning" id="button_run" type="button" value="Run" style="width: 96px">
+    <input title="Pause the simulation; space is a hotkey" id="button_pause" type="button" value="Pause" style="width: 96px">
+    <a href="https://github.com/quasilyte/gophers-and-dragons/blob/master/manual.md" style="margin-left: 32px; line-height: 30px">Open documentation</a>
 </div>
 
 <div id="wrap">
@@ -44,7 +45,7 @@ func tactic2(s game.State) game.CardType {
 
             <br>
             <br>
-            <label style="float: left">
+            <label title="Change the simulation speed" style="float: left">
                 Speed:
                 <select id="select_speed">
                     <option value="2500">Very slow</option>
@@ -56,13 +57,13 @@ func tactic2(s game.State) game.CardType {
                 </select>
             </label>
 
-            <div style="margin-left: 32px; margin-top: 4px; width: 100px; float: left">
+            <div title="How well your program performed in the game" style="margin-left: 32px; margin-top: 4px; width: 100px; float: left">
                 Score: <span id="status_score">0</span>
             </div>
-            <div style="margin-top: 4px; width: 100px; float: left">
+            <div title="Current turn number" style="margin-top: 4px; width: 100px; float: left">
                 Turn: <span id="status_turn">0</span>
             </div>
-            <div style="margin-top: 4px; width: 120px; float: left">
+            <div title="Current round number" style="margin-top: 4px; width: 120px; float: left">
                 Round: <span id="status_round">0</span>/10
             </div>
         </div>
