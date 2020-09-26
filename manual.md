@@ -36,6 +36,7 @@ Cards that need to be obtained before becoming available:
 ## Creep traits
 
 | Name | Effect |
+|---|---|
 | Coward | Doesn't attack until you attack it first |
 | Ranged | Attacks can't be parried |
 | WeakToFire | Fire attacks deal x2 damage |
