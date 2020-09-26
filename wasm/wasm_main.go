@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 	"syscall/js"
@@ -8,13 +10,14 @@ import (
 	"github.com/quasilyte/gophers-and-dragons/game"
 	"github.com/quasilyte/gophers-and-dragons/wasm/gamedata"
 	"github.com/quasilyte/gophers-and-dragons/wasm/sim"
+	"github.com/quasilyte/gophers-and-dragons/wasm/simstep"
 	"github.com/traefik/yaegi/interp"
 	// "github.com/traefik/yaegi/stdlib"
 )
 
 func main() {
 	js.Global().Set("evalGo", js.FuncOf(evalGo))
-	js.Global().Set("runSimulation", js.FuncOf(runSimulation))
+	js.Global().Set("runSimulation", js.FuncOf(runSimulationJS))
 	js.Global().Set("getCreepStats", js.FuncOf(getCreepStats))
 	js.Global().Set("getCardStats", js.FuncOf(getCardStats))
 
@@ -90,10 +93,7 @@ func getCreepStats(this js.Value, inputs []js.Value) interface{} {
 	return creepStatsToJS(gamedata.GetCreepStats(typ))
 }
 
-func runSimulation(this js.Value, inputs []js.Value) interface{} {
-	config := inputs[0]
-	code := inputs[1].String()
-
+func runSimulation(config js.Value, code string) (actions []simstep.Action, err error) {
 	i := interp.New(interp.Options{})
 
 	i.Use(map[string]map[string]reflect.Value{
@@ -127,7 +127,9 @@ func runSimulation(this js.Value, inputs []js.Value) interface{} {
 	})
 	// i.Use(stdlib.Symbols)
 
-	mustEval(i, code)
+	if _, err := i.Eval(code); err != nil {
+		return nil, err
+	}
 
 	pkg := inferPackage(code)
 	userFuncSym := "ChooseCard"
@@ -135,9 +137,14 @@ func runSimulation(this js.Value, inputs []js.Value) interface{} {
 		userFuncSym = pkg + ".ChooseCard"
 	}
 
-	userFunc, ok := mustEval(i, userFuncSym).(func(game.State) game.CardType)
+	res, err := i.Eval(userFuncSym)
+	if err != nil {
+		return nil, errors.New("can't find proper ChooseCard definition")
+	}
+
+	userFunc, ok := res.Interface().(func(game.State) game.CardType)
 	if !ok {
-		panic("can't find proper ChooseCard definition")
+		return nil, errors.New("can't find proper ChooseCard definition")
 	}
 
 	simConfig := &sim.Config{
@@ -145,24 +152,25 @@ func runSimulation(this js.Value, inputs []js.Value) interface{} {
 		AvatarHP: config.Get("avatarHP").Int(),
 		AvatarMP: config.Get("avatarMP").Int(),
 	}
-	actions := sim.Run(simConfig, userFunc)
+	return sim.Run(simConfig, userFunc), nil
+}
+
+func runSimulationJS(this js.Value, inputs []js.Value) interface{} {
+	config := inputs[0]
+	code := inputs[1].String()
+
+	actions, err := runSimulation(config, code)
+	if err != nil {
+		return []interface{}{
+			(simstep.RedLog{Message: fmt.Sprintf("Error: %s", err.Error())}).Fields(),
+		}
+	}
 
 	jsResult := make([]interface{}, len(actions))
 	for i, a := range actions {
 		jsResult[i] = a.Fields()
 	}
 	return jsResult
-}
-
-func mustEval(i *interp.Interpreter, code string) interface{} {
-	result, err := i.Eval(code)
-	if err != nil {
-		panic(err)
-	}
-	if result.IsValid() && result.CanInterface() {
-		return result.Interface()
-	}
-	return ""
 }
 
 func inferPackage(s string) string {
