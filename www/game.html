@@ -1,0 +1,144 @@
+<meta charset="utf-8">
+<link rel="stylesheet" href="styles.css">
+
+<title>Gophers & Dragons</title>
+
+<div id="banner">
+    <div id="head" itemprop="name">Gophers & Dragons</div>
+
+    <input id="button_run" type="button" value="Run" style="width: 96px">
+    <input id="button_pause" type="button" value="Pause" style="width: 96px">
+</div>
+
+<div id="wrap">
+    <div style="width: 1500px">
+        <div id="code-block" style="float: left">
+            <textarea id="code_editor" class="code block" data-gramm="false" spellcheck="false">
+package tactic
+
+import "github.com/quasilyte/gophers-and-dragons/game"
+
+func ChooseCard(s game.State) game.CardType {
+	return tactic1(s)
+}
+
+// tactic1 is a trivial tactic that always retreats.
+// You can't win like this, but it's a minimal working
+// example that manages to pass the entire game without dying.
+func tactic1(s game.State) game.CardType {
+	return game.CardRetreat
+}
+
+// tactic2 will only fight with the easiest kind of
+// monsters and will route if wounded.
+func tactic2(s game.State) game.CardType {
+	if s.Avatar.HP < 10 {
+		return game.CardRetreat
+	}
+	if s.Creep.Type == game.CreepCheepy {
+		return game.CardAttack
+	}
+	return game.CardRetreat
+}
+            </textarea>
+
+            <br>
+            <br>
+            <label style="float: left">
+                Speed:
+                <select id="select_speed">
+                    <option value="2500">Very slow</option>
+                    <option value="1500">Slow</option>
+                    <option value="750" selected="selected">Normal</option>
+                    <option value="400">Fast</option>
+                    <option value="200">Very fast</option>
+                    <option value="1">Instant</option>
+                </select>
+            </label>
+
+            <div style="margin-left: 32px; margin-top: 4px; width: 100px; float: left">
+                Score: <span id="status_score">0</span>
+            </div>
+            <div style="margin-top: 4px; width: 100px; float: left">
+                Turn: <span id="status_turn">0</span>
+            </div>
+            <div style="margin-top: 4px; width: 120px; float: left">
+                Round: <span id="status_round">0</span>/10
+            </div>
+        </div>
+
+        <div id="log" style="padding: 8px; margin-left: 8px; float: left; width: 400px; height: 360px; border: 1px solid black; overflow-y: scroll">
+        </div>
+
+        <div style="float: left; margin: 8px; height: 216px; border-left: 1px solid black; border-right: 1px solid black;">
+            <table style="float: left; width: 208px">
+                <tr><th>Offensive cards</th></tr>
+                <tr><td><span class="card">Attack</span> (∞) 0 MP</td></tr>
+                <tr><td><span class="card">MagicArrow</span> (∞) 1 MP</td></tr>
+                <tr><td><span class="card">PowerAttack</span> (<span id="card_power_attack">0</span>) 0 MP</td></tr>
+                <tr><td><span class="card">Firebolt</span> (<span id="card_firebolt">0</span>) 3 MP</td></tr>
+                <tr><td><span class="card">Stun</span> (<span id="card_stun">0</span>) 0 MP</td></tr>
+            </table>
+            <table style="margin-left: 1px; float: left;  width: 208px">
+                <tr><th>Tactical cards</th></tr>
+                <tr><td><span class="card">Retreat</span> (∞) 0 MP</td></tr>
+                <tr><td><span class="card">Rest</span> (∞) 2 MP</td></tr>
+                <tr><td><span class="card">Heal</span> (<span id="card_heal">0</span>) 4 MP</td></tr>
+                <tr><td><span class="card">Parry</span> (<span id="card_parry">0</span>) 0 MP</td></tr>
+            </table>
+        </div>
+
+        <table id="statusbox">
+            <tr>
+                <td style="text-align: right">Avatar</td>
+                <td id="avatar_status">
+                    <div style="float: left">
+                        <div><img id="avatar_status_pic" class="unit" src="img/creep/None.png"></div>
+                    </div>
+                    
+                </td>
+                <td>
+                    <div style="float: left; margin-left: 8px">
+                        HP: <span id="avatar_status_hp">?</span><br>
+                        MP: <span id="avatar_status_mp">?</span><br>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right">Creep</td>
+                <td id="creep_status">
+                    <div style="float: left">
+                        <div><img id="creep_status_pic" class="unit" src="img/creep/None.png"></div>
+                    </div>
+                    
+                </td>
+                <td>
+                    <div style="float: left; margin-left: 8px">
+                        <span id="creep_status_name">?</span><br>
+                        HP: <span id="creep_status_hp">?</span><br>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right">Next creep</td>
+                <td>
+                    <div style="float: left">
+                        <div><img id="next_creep_status_pic" class="unit" src="img/creep/None.png"></div>
+                    </div>
+                </td>
+                <td>
+                    <div style="float: left; margin-left: 8px">
+                        <span id="next_creep_status_name">?</span><br>
+                        HP: <span id="next_creep_status_hp">?</span><br>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div id="hover_details" style="padding: 8px; margin-top: 7px; display: inline-block; width: 320px; height: 198px; border-top: 1px solid black; border-bottom: 1px solid black">
+        </div>
+    </div>
+</div>
+
+<script src="wasm_exec.js"></script>
+<script src="game.js"></script>

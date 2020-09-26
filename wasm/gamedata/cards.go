@@ -4,33 +4,76 @@ import (
 	"github.com/quasilyte/gophers-and-dragons/game"
 )
 
-func CardProto(typ game.CardType) game.Card {
-	card := game.Card{Type: typ}
+var Cards = map[game.CardType]game.CardStats{
+	game.CardAttack: {
+		MP:          0,
+		IsMagic:     false,
+		IsOffensive: true,
+		Power:       game.IntRange{2, 4},
+		Effect:      "damage",
+	},
 
-	switch typ {
-	case game.CardAttack:
-		card.MP = 0
-		card.IsMagic = false
-		card.IsOffensive = true
+	game.CardPowerAttack: {
+		MP:          0,
+		IsMagic:     false,
+		IsOffensive: true,
+		Power:       game.IntRange{4, 5},
+		Effect:      "damage",
+	},
 
-	case game.CardMagicArrow:
-		card.MP = 1
-		card.IsMagic = true
-		card.IsOffensive = true
+	game.CardStun: {
+		MP:          0,
+		IsMagic:     false,
+		IsOffensive: true,
+		Power:       game.IntRange{2, 2},
+		Effect:      "turns skipped",
+	},
 
-	case game.CardRetreat:
-		card.MP = 0
-		card.IsMagic = false
-		card.IsOffensive = false
+	game.CardMagicArrow: {
+		MP:          1,
+		IsMagic:     true,
+		IsOffensive: true,
+		Power:       game.IntRange{3, 3},
+		Effect:      "magical damage",
+	},
 
-	case game.CardRest:
-		card.MP = 2
-		card.IsMagic = false
-		card.IsOffensive = false
+	game.CardFirebolt: {
+		MP:          3,
+		IsMagic:     true,
+		IsOffensive: true,
+		Power:       game.IntRange{4, 6},
+		Effect:      "magical damage",
+	},
 
-	default:
-		panic("unknown card type")
-	}
+	game.CardRetreat: {
+		MP:          0,
+		IsMagic:     false,
+		IsOffensive: false,
+	},
 
-	return card
+	game.CardRest: {
+		MP:          2,
+		IsMagic:     false,
+		IsOffensive: false,
+		Power:       game.IntRange{3, 3},
+		Effect:      "HP recovered",
+	},
+
+	game.CardHeal: {
+		MP:          4,
+		IsMagic:     true,
+		IsOffensive: false,
+		Power:       game.IntRange{10, 15},
+		Effect:      "HP recovered",
+	},
+
+	game.CardParry: {
+		MP:          0,
+		IsMagic:     false,
+		IsOffensive: false,
+	},
+}
+
+func GetCardStats(typ game.CardType) game.CardStats {
+	return Cards[typ]
 }

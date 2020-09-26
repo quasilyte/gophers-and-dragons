@@ -4,28 +4,63 @@ import (
 	"github.com/quasilyte/gophers-and-dragons/game"
 )
 
-func CreepProto(typ game.CreepType) game.CreepStatus {
-	creep := game.CreepStatus{Type: typ}
+var creeps = map[game.CreepType]game.CreepStats{
+	game.CreepCheepy: {
+		MaxHP:       4,
+		Damage:      game.IntRange{1, 4},
+		ScoreReward: 3,
+		CardsReward: 1,
+		Traits: []game.CreepTrait{
+			game.TraitCoward,
+		},
+	},
 
-	switch typ {
-	case game.CreepCheepy:
-		creep.HP = 4
+	game.CreepImp: {
+		MaxHP:       5,
+		Damage:      game.IntRange{3, 4},
+		ScoreReward: 5,
+		CardsReward: 1,
+	},
 
-	case game.CreepLion:
-		creep.HP = 7
+	game.CreepLion: {
+		MaxHP:       10,
+		Damage:      game.IntRange{2, 3},
+		ScoreReward: 6,
+		CardsReward: 2,
+	},
 
-	case game.CreepFairy:
-		creep.HP = 6
+	game.CreepFairy: {
+		MaxHP:       9,
+		Damage:      game.IntRange{4, 5},
+		ScoreReward: 11,
+		CardsReward: 2,
+		Traits: []game.CreepTrait{
+			game.TraitRanged,
+		},
+	},
 
-	case game.CreepMummy:
-		creep.HP = 20
+	game.CreepMummy: {
+		MaxHP:       18,
+		Damage:      game.IntRange{3, 4},
+		ScoreReward: 15,
+		CardsReward: 3,
+		Traits: []game.CreepTrait{
+			game.TraitWeakToFire,
+			game.TraitSlow,
+		},
+	},
 
-	case game.CreepDragon:
-		creep.HP = 25
+	game.CreepDragon: {
+		MaxHP:       30,
+		Damage:      game.IntRange{5, 6},
+		ScoreReward: 35,
+		CardsReward: 5,
+		Traits: []game.CreepTrait{
+			game.TraitMagicImmunity,
+		},
+	},
+}
 
-	default:
-		panic("unknown creep type")
-	}
-
-	return creep
+func GetCreepStats(typ game.CreepType) game.CreepStats {
+	return creeps[typ]
 }

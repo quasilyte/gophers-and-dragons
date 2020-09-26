@@ -1,0 +1,203 @@
+package main
+
+import (
+	"reflect"
+	"strings"
+	"syscall/js"
+
+	"github.com/quasilyte/gophers-and-dragons/game"
+	"github.com/quasilyte/gophers-and-dragons/wasm/gamedata"
+	"github.com/quasilyte/gophers-and-dragons/wasm/sim"
+	"github.com/traefik/yaegi/interp"
+	// "github.com/traefik/yaegi/stdlib"
+)
+
+func main() {
+	js.Global().Set("evalGo", js.FuncOf(evalGo))
+	js.Global().Set("runSimulation", js.FuncOf(runSimulation))
+	js.Global().Set("getCreepStats", js.FuncOf(getCreepStats))
+	js.Global().Set("getCardStats", js.FuncOf(getCardStats))
+
+	ch := make(chan struct{})
+	<-ch
+}
+
+func evalGo(this js.Value, inputs []js.Value) interface{} {
+	code := inputs[0].String()
+	i := interp.New(interp.Options{})
+	res, err := i.Eval(code)
+	if err != nil {
+		panic(err)
+	}
+	return res.Interface()
+}
+
+func getCardStats(this js.Value, inputs []js.Value) interface{} {
+	name := inputs[0].String()
+
+	var typ game.CardType
+
+	switch name {
+	case "Attack":
+		typ = game.CardAttack
+	case "PowerAttack":
+		typ = game.CardPowerAttack
+	case "Stun":
+		typ = game.CardStun
+	case "MagicArrow":
+		typ = game.CardMagicArrow
+	case "Firebolt":
+		typ = game.CardFirebolt
+
+	case "Retreat":
+		typ = game.CardRetreat
+	case "Rest":
+		typ = game.CardRest
+	case "Heal":
+		typ = game.CardHeal
+	case "Parry":
+		typ = game.CardParry
+
+	default:
+		return nil
+	}
+
+	return cardStatsToJS(gamedata.GetCardStats(typ))
+}
+
+func getCreepStats(this js.Value, inputs []js.Value) interface{} {
+	name := inputs[0].String()
+
+	var typ game.CreepType
+
+	switch name {
+	case "Cheepy":
+		typ = game.CreepCheepy
+	case "Imp":
+		typ = game.CreepImp
+	case "Lion":
+		typ = game.CreepLion
+	case "Fairy":
+		typ = game.CreepFairy
+	case "Mummy":
+		typ = game.CreepMummy
+	case "Dragon":
+		typ = game.CreepDragon
+	default:
+		return nil
+	}
+
+	return creepStatsToJS(gamedata.GetCreepStats(typ))
+}
+
+func runSimulation(this js.Value, inputs []js.Value) interface{} {
+	config := inputs[0]
+	code := inputs[1].String()
+
+	i := interp.New(interp.Options{})
+
+	i.Use(map[string]map[string]reflect.Value{
+		"github.com/quasilyte/gophers-and-dragons/game": {
+			"State":    reflect.ValueOf((*game.State)(nil)),
+			"CardType": reflect.ValueOf((*game.CardType)(nil)),
+
+			"CreepCheepy": reflect.ValueOf(game.CreepCheepy),
+			"CreepImp":    reflect.ValueOf(game.CreepImp),
+			"CreepLion":   reflect.ValueOf(game.CreepLion),
+			"CreepFairy":  reflect.ValueOf(game.CreepFairy),
+			"CreepMummy":  reflect.ValueOf(game.CreepMummy),
+			"CreepDragon": reflect.ValueOf(game.CreepDragon),
+
+			"TraitCoward":        reflect.ValueOf(game.TraitCoward),
+			"TraitMagicImmunity": reflect.ValueOf(game.TraitMagicImmunity),
+			"TraitWeakToFire":    reflect.ValueOf(game.TraitWeakToFire),
+			"TraitSlow":          reflect.ValueOf(game.TraitSlow),
+			"TraitRanged":        reflect.ValueOf(game.TraitRanged),
+
+			"CardMagicArrow":  reflect.ValueOf(game.CardMagicArrow),
+			"CardAttack":      reflect.ValueOf(game.CardAttack),
+			"CardPowerAttack": reflect.ValueOf(game.CardPowerAttack),
+			"CardStun":        reflect.ValueOf(game.CardStun),
+			"CardFirebolt":    reflect.ValueOf(game.CardFirebolt),
+			"CardRetreat":     reflect.ValueOf(game.CardRetreat),
+			"CardRest":        reflect.ValueOf(game.CardRest),
+			"CardHeal":        reflect.ValueOf(game.CardHeal),
+			"CardParry":       reflect.ValueOf(game.CardParry),
+		},
+	})
+	// i.Use(stdlib.Symbols)
+
+	mustEval(i, code)
+
+	pkg := inferPackage(code)
+	userFuncSym := "ChooseCard"
+	if pkg != "" {
+		userFuncSym = pkg + ".ChooseCard"
+	}
+
+	userFunc, ok := mustEval(i, userFuncSym).(func(game.State) game.CardType)
+	if !ok {
+		panic("can't find proper ChooseCard definition")
+	}
+
+	simConfig := &sim.Config{
+		Rounds:   config.Get("rounds").Int(),
+		AvatarHP: config.Get("avatarHP").Int(),
+		AvatarMP: config.Get("avatarMP").Int(),
+	}
+	actions := sim.Run(simConfig, userFunc)
+
+	jsResult := make([]interface{}, len(actions))
+	for i, a := range actions {
+		jsResult[i] = a.Fields()
+	}
+	return jsResult
+}
+
+func mustEval(i *interp.Interpreter, code string) interface{} {
+	result, err := i.Eval(code)
+	if err != nil {
+		panic(err)
+	}
+	if result.IsValid() && result.CanInterface() {
+		return result.Interface()
+	}
+	return ""
+}
+
+func inferPackage(s string) string {
+	newline := strings.IndexByte(s, '\n')
+	if newline == -1 {
+		return ""
+	}
+	line := s[:newline]
+	if !strings.HasPrefix(line, "package ") {
+		return ""
+	}
+	packageName := line[len("package "):]
+	return packageName
+}
+
+func creepStatsToJS(stats game.CreepStats) map[string]interface{} {
+	var traits []interface{}
+	for _, x := range stats.Traits {
+		traits = append(traits, x.String())
+	}
+	return map[string]interface{}{
+		"maxHP":       stats.MaxHP,
+		"damage":      []interface{}{stats.Damage[0], stats.Damage[1]},
+		"scoreReward": stats.ScoreReward,
+		"cardsReward": stats.CardsReward,
+		"traits":      traits,
+	}
+}
+
+func cardStatsToJS(stats game.CardStats) map[string]interface{} {
+	return map[string]interface{}{
+		"mp":          stats.MP,
+		"isMagic":     stats.IsMagic,
+		"isOffensive": stats.IsOffensive,
+		"power":       []interface{}{stats.Power[0], stats.Power[1]},
+		"effect":      stats.Effect,
+	}
+}

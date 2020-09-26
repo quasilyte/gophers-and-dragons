@@ -1,5 +1,5 @@
 * {
-    font-family: Roboto;
+	font-family: sans-serif;
 }
 
 .unit {
@@ -34,13 +34,18 @@
     border: 1px solid black;
 }
 
-.text-bad {
+#banner > select {
+	font-size: 0.875rem;
+	border: 0.0625rem solid #375EAB;
+}
+
+.text-red {
     color: rgb(158, 38, 38);
 }
-.text-good {
+.text-green {
     color: rgb(65, 182, 55);
 }
-.text-magic {
+.text-violet {
     color: blueviolet;
 }
 
@@ -52,12 +57,12 @@ pre {
 }
 #code-block {
     height: 584px;
-    width: 584px;
+    width: 660px;
     border: 1px solid #7387a7;
     padding: 8px;
     background-color: #FFD;
 }
-#code-editor {
+#code_editor {
     overflow: scroll;
     width: 100%;
     background: inherit;
