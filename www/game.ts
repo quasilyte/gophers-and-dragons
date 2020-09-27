@@ -153,7 +153,7 @@ export function main() {
 
         let site = 'https://quasilyte.dev/gophers-and-dragons/game.html';
         if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-            site = `https://${location.host}/game.html`;
+            site = `http://${location.host}/game.html`;
         }
 
         if (codeURI.length > 1800) {
