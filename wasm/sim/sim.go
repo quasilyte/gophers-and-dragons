@@ -53,7 +53,7 @@ func newRunner(config *Config, chooseCard func(game.State) game.CardType) *runne
 		config:     config,
 		state:      newGameState(config),
 		chooseCard: chooseCard,
-		rand:       rand.New(rand.NewSource(time.Now().Unix())),
+		rand:       rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
 }
 
