@@ -17,6 +17,7 @@ import (
 )
 
 func main() {
+	js.Global().Set("gominify", js.FuncOf(gominify))
 	js.Global().Set("gofmt", js.FuncOf(gofmt))
 	js.Global().Set("evalGo", js.FuncOf(evalGo))
 	js.Global().Set("runSimulation", js.FuncOf(runSimulationJS))
@@ -34,6 +35,18 @@ func gofmt(this js.Value, inputs []js.Value) interface{} {
 		return "error: " + err.Error()
 	}
 	return string(pretty)
+}
+
+func gominify(this js.Value, inputs []js.Value) interface{} {
+	code := inputs[0].String()
+	return code
+
+	// fset := token.NewFileSet()
+	// f, err := parser.ParseFile(fset, "gophers-and-dragons.go", []byte(code), 0)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// return string(minformat.Node(f))
 }
 
 func evalGo(this js.Value, inputs []js.Value) interface{} {

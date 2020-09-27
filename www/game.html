@@ -9,6 +9,7 @@
     <input title="Run simulation from the beginning" id="button_run" type="button" value="Run" style="width: 96px">
     <input title="Pause the simulation; space is a hotkey" id="button_pause" type="button" value="Pause" style="width: 96px">
     <input title="Format the source code with gofmt" id="button_format" type="button" value="Format" style="width: 96px">
+    <input title="Copy a sharable link" id="button_share" type="button" value="Share" style="width: 96px">
     <a href="https://github.com/quasilyte/gophers-and-dragons/blob/master/manual.md" style="margin-left: 32px; line-height: 30px">Open documentation</a>
 </div>
 
@@ -142,5 +143,6 @@ func tactic2(s game.State) game.CardType {
     </div>
 </div>
 
+<script src="lz-string.js"></script>
 <script src="wasm_exec.js"></script>
 <script src="game.js"></script>

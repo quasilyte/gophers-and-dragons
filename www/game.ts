@@ -1,5 +1,10 @@
 namespace App {
+declare class LZString {
+    static compressToEncodedURIComponent(s: string): string;
+    static decompressFromEncodedURIComponent(s: string): string;
+}
 
+declare function gominify(code: string): string;
 declare function gofmt(code: string): string;
 declare function evalGo(code: string): any;
 declare function runSimulation(config: any, code: string): any;
@@ -28,6 +33,23 @@ export function main() {
         });
     }
 
+    function copyToClipboard(text) {
+        let el = document.createElement('textarea'); // Temp container
+        el.value = text;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        try {
+            let ok = document.execCommand('copy');
+            console.debug('copy to clipboard:', ok);
+        } catch (e) {
+            console.error('clipboard insertion failed', e);
+        }
+        document.body.removeChild(el);
+    }
+
     function rand(max: number) : number {
         return Math.floor(Math.random() * Math.floor(max));
     }
@@ -44,6 +66,7 @@ export function main() {
             'run': document.getElementById('button_run') as HTMLInputElement,
             'pause': document.getElementById('button_pause') as HTMLInputElement,
             'format': document.getElementById('button_format') as HTMLInputElement,
+            'share': document.getElementById('button_share') as HTMLInputElement,
         },
         'speed': document.getElementById('select_speed') as HTMLSelectElement,
         'log': document.getElementById('log'),
@@ -108,6 +131,39 @@ export function main() {
         elements.nextCreep.pic.src = `img/creep/${name}.png`;
         elements.nextCreep.name.innerText = name;
         elements.nextCreep.hp.innerText = hp.toString();
+    }
+
+    function encodeCodeURI(code: string): string {
+        console.log("code length: %d", code.length);
+        code = gominify(code);
+        console.log("code minformat length: %d", code.length);
+        code = LZString.compressToEncodedURIComponent(code);
+        console.log("code minify+compress length: %d", code.length);
+        return code;
+    }
+
+    function decodeCodeURI(uri: string): string {
+        let code = LZString.decompressFromEncodedURIComponent(uri);
+        return gofmt(code);
+    }
+
+    function shareURL() {
+        let code = elements.code.value;
+        let codeURI = encodeCodeURI(code);
+
+        let site = 'https://quasilyte.dev/gophers-and-dragons/game.html';
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+            site = `https://${location.host}/game.html`;
+        }
+
+        if (codeURI.length > 1800) {
+            return '';
+        }
+
+        var params = [];
+        params.push(`avatar=${AVATAR_ID}`);
+        params.push(`code=${codeURI}`);
+        return site + '?' + params.join('&');
     }
 
     function resetPage() {
@@ -207,6 +263,11 @@ export function main() {
     }
 
     function initGame() {
+        let code = urlParams.get('code');
+        if (code !== null) {
+            elements.code.value = decodeCodeURI(code);
+        }
+
         resetPage();
 
         elements.creep.pic.onmouseenter = function(e) {
@@ -279,6 +340,15 @@ export function main() {
                 insertText(elements.code, '    ');
             }
         });
+
+        elements.button.share.onclick = function (e) {
+            let url = shareURL();
+            if (url) {
+                copyToClipboard(url);
+            } else {
+                alert('Your code is too big to be shared');
+            }
+        };
 
         elements.button.pause.onclick = function(e) {
             handlePause();
