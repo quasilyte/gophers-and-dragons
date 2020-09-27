@@ -1,5 +1,6 @@
 namespace App {
 
+declare function gofmt(code: string): string;
 declare function evalGo(code: string): any;
 declare function runSimulation(config: any, code: string): any;
 declare function getCreepStats(name: string): any;
@@ -42,6 +43,7 @@ export function main() {
         'button': {
             'run': document.getElementById('button_run') as HTMLInputElement,
             'pause': document.getElementById('button_pause') as HTMLInputElement,
+            'format': document.getElementById('button_format') as HTMLInputElement,
         },
         'speed': document.getElementById('select_speed') as HTMLSelectElement,
         'log': document.getElementById('log'),
@@ -233,6 +235,16 @@ export function main() {
         for (let i = 0; i < cardLabels.length; i++) {
             cardLabels[i].addEventListener('mouseenter', cardDetailsHandler, false);
         }
+
+        elements.button.format.onclick = function(e) {
+            let code = elements.code.value;
+            let result = gofmt(code);
+            if (result.startsWith('error:')) {
+                console.error("gofmt: %s", result);
+            } else {
+                elements.code.value = result;
+            }
+        };
 
         elements.button.run.onclick = function(e) {
             if (currentSimulationInterval) {

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"go/format"
 	"reflect"
 	"strings"
 	"syscall/js"
@@ -16,6 +17,7 @@ import (
 )
 
 func main() {
+	js.Global().Set("gofmt", js.FuncOf(gofmt))
 	js.Global().Set("evalGo", js.FuncOf(evalGo))
 	js.Global().Set("runSimulation", js.FuncOf(runSimulationJS))
 	js.Global().Set("getCreepStats", js.FuncOf(getCreepStats))
@@ -23,6 +25,15 @@ func main() {
 
 	ch := make(chan struct{})
 	<-ch
+}
+
+func gofmt(this js.Value, inputs []js.Value) interface{} {
+	code := inputs[0].String()
+	pretty, err := format.Source([]byte(code))
+	if err != nil {
+		return "error: " + err.Error()
+	}
+	return string(pretty)
 }
 
 func evalGo(this js.Value, inputs []js.Value) interface{} {
