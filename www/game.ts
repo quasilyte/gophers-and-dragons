@@ -56,7 +56,11 @@ export function main() {
 
     function updateElementText(el: HTMLElement, delta: number) {
         let val = parseInt(el.innerText, 10);
-        el.innerText = '' + (val + delta);
+        let newVal = val + delta;
+        if (newVal < 0) {
+            newVal = 0;
+        }
+        el.innerText = `${newVal}`;
     }
 
     const elements = {
