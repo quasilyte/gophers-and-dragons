@@ -7,6 +7,14 @@
     <div id="head" itemprop="name">Gophers & Dragons</div>
 
     <input title="Run simulation from the beginning" id="button_run" type="button" value="Run" style="width: 96px">
+    <select title="Change the simulation speed" id="select_speed">
+        <option value="2500">Very slow speed</option>
+        <option value="1500">Slow speed</option>
+        <option value="750" selected="selected">Normal speed</option>
+        <option value="350">Fast speed</option>
+        <option value="100">Very fast speed</option>
+        <option value="1">Instant speed</option>
+    </select>
     <input title="Pause the simulation; space is a hotkey" id="button_pause" type="button" value="Pause" style="width: 96px">
     <input title="Advance 1 turn forward (only works when paused)" id="button_next_turn" type="button" value="Next Turn" style="width: 96px">
     <input title="Format the source code with gofmt" id="button_format" type="button" value="Format" style="width: 96px">
@@ -48,19 +56,8 @@ func tactic2(s game.State) game.CardType {
 
             <br>
             <br>
-            <label title="Change the simulation speed" style="float: left">
-                Speed:
-                <select id="select_speed">
-                    <option value="2500">Very slow</option>
-                    <option value="1500">Slow</option>
-                    <option value="750" selected="selected">Normal</option>
-                    <option value="400">Fast</option>
-                    <option value="200">Very fast</option>
-                    <option value="1">Instant</option>
-                </select>
-            </label>
-
-            <div title="How well your program performed in the game" style="margin-left: 32px; margin-top: 4px; width: 100px; float: left">
+            
+            <div title="How well your program performed in the game" style="margin-top: 4px; width: 100px; float: left">
                 Score: <span id="status_score">0</span>
             </div>
             <div title="Current turn number" style="margin-top: 4px; width: 100px; float: left">
