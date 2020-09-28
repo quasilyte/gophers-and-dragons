@@ -1,4 +1,6 @@
-# Gophers & Dragons manual
+<img width="50%" height="50%" src="logo.png">
+
+# The manual
 
 ## Basics
 
