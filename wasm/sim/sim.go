@@ -214,6 +214,9 @@ func (r *runner) runAvatarAction(cardType game.CardType, card game.CardStats) {
 	}
 
 	switch cardType {
+	case game.CardRetreat:
+		r.emitLogf("Trying to retreat...")
+
 	case game.CardAttack, game.CardPowerAttack:
 		damageRoll := r.rangeRand(card.Power)
 		creep.HP -= damageRoll
