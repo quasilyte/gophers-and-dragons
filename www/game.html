@@ -27,13 +27,17 @@
     <input title="Advance 1 turn forward (only works when paused)" id="button_next_turn" type="button" value="Next Turn" style="width: 96px">
     <input title="Format the source code with gofmt" id="button_format" type="button" value="Format" style="width: 96px">
     <input title="Copy a sharable link" id="button_share" type="button" value="Share" style="width: 96px">
+    <select title="Switch between tactic/game editor" id="select_tab">
+        <option value="tab_tactics" selected="selected">Tactics editor</option>
+        <option value="tab_settings">Game editor</option>
+    </select>
     <a href="https://github.com/quasilyte/gophers-and-dragons/blob/master/manual.md" style="margin-left: 32px; line-height: 30px">Open documentation</a>
 </div>
 
 <div id="wrap">
     <div style="width: 1500px">
         <div id="code-block" style="float: left">
-            <textarea id="code_editor" class="code block" data-gramm="false" spellcheck="false">
+            <textarea id="tactics_editor" class="editor code block" data-gramm="false" spellcheck="false">
 package tactic
 
 import "github.com/quasilyte/gophers-and-dragons/game"
@@ -61,6 +65,7 @@ func tactic2(s game.State) game.CardType {
 	return game.CardRetreat
 }
             </textarea>
+            <textarea id="settings_editor" class="editor code block" data-gramm="false" spellcheck="false" style="display: none;"></textarea>
 
             <br>
             <br>

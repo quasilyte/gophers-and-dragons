@@ -62,8 +62,8 @@ pre {
     padding: 8px;
     background-color: #FFD;
 }
-#code_editor {
-    overflow: scroll;
+.editor {
+    overflow: scroll !important;
     width: 100%;
     background: inherit;
 }

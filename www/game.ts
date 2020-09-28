@@ -65,7 +65,8 @@ export function main() {
 
     const elements = {
         'details': document.getElementById('hover_details'),
-        'code': document.getElementById('code_editor') as HTMLTextAreaElement,
+        'tactics': document.getElementById('tactics_editor') as HTMLTextAreaElement,
+        'settings': document.getElementById('settings_editor') as HTMLTextAreaElement,
         'button': {
             'run': document.getElementById('button_run') as HTMLInputElement,
             'pause': document.getElementById('button_pause') as HTMLInputElement,
@@ -74,6 +75,7 @@ export function main() {
             'share': document.getElementById('button_share') as HTMLInputElement,
         },
         'speed': document.getElementById('select_speed') as HTMLSelectElement,
+        'tab': document.getElementById('select_tab') as HTMLSelectElement,
         'log': document.getElementById('log'),
         'avatar': {
             'pic': document.getElementById('avatar_status_pic') as HTMLImageElement, 
@@ -106,9 +108,12 @@ export function main() {
 
     const urlParams = new URLSearchParams(window.location.search);
 
+    let gameSettings = {
+        avatarHP: 40,
+        avatarMP: 20,
+    }
+
     const NUM_ROUNDS = 10;
-    const AVATAR_MAX_HP = 40;
-    const AVATAR_MAX_MP = 20;
     const AVATAR_ID = urlParams.get('avatar') || rand(5);
 
     const cardDescriptions = {
@@ -154,7 +159,7 @@ export function main() {
     }
 
     function shareURL() {
-        let code = elements.code.value;
+        let code = elements.tactics.value;
         let codeURI = encodeCodeURI(code);
 
         let site = 'https://quasilyte.dev/gophers-and-dragons/game.html';
@@ -173,6 +178,8 @@ export function main() {
     }
 
     function resetPage() {
+        applySettings();
+
         // Set spell counts to 0.
         for (const key in cardElements) {
             cardElements[key].innerText = '0';
@@ -183,8 +190,8 @@ export function main() {
         }
         elements.status.score.classList.remove('text-green');
         // Reset hero.
-        elements.avatar.hp.innerText = `${AVATAR_MAX_HP}`;
-        elements.avatar.mp.innerText = `${AVATAR_MAX_MP}`;
+        elements.avatar.hp.innerText = `${gameSettings.avatarHP}`;
+        elements.avatar.mp.innerText = `${gameSettings.avatarMP}`;
         elements.avatar.pic.src = `img/avatar/avatar${AVATAR_ID}.png`;
         // Set the initial creeps.
         setCreep('Cheepy', getCreepStats('Cheepy').maxHP);
@@ -294,10 +301,32 @@ export function main() {
         }
     }
 
+    function applySettings() {
+        let settingsText = elements.settings.value;
+
+        try {
+            let x = JSON.parse(settingsText)
+            if (x.avatarHP) {
+                gameSettings.avatarHP = x.avatarHP;
+            }
+            if (x.avatarMP) {
+                gameSettings.avatarMP = x.avatarMP;
+            }
+        } catch (e) {
+            console.error("bad settings: " + e)
+        }
+    }
+
     function initGame() {
         let code = urlParams.get('code');
         if (code !== null) {
-            elements.code.value = decodeCodeURI(code);
+            elements.tactics.value = decodeCodeURI(code);
+        }
+
+        elements.tab.options[0].selected = true;
+
+        if (elements.settings.value === '') {
+            elements.settings.value = JSON.stringify(gameSettings, undefined, 4);
         }
 
         resetPage();
@@ -319,6 +348,17 @@ export function main() {
             renderCreepDetails(nextCreep, creepStats);
         };
 
+        elements.tab.onchange = function(e) {
+            let selected = elements.tab.options[elements.tab.selectedIndex].value;
+            if (selected === 'tab_tactics') {
+                elements.tactics.style.display = '';
+                elements.settings.style.display = 'none';
+            } else if (selected === 'tab_settings') {
+                elements.tactics.style.display = 'none';
+                elements.settings.style.display = '';
+            }
+        };
+
         let cardLabels = document.getElementsByClassName('card');
         let cardDetailsHandler = function() {
             let cardName = this.innerText;
@@ -336,12 +376,12 @@ export function main() {
         };
 
         elements.button.format.onclick = function(e) {
-            let code = elements.code.value;
+            let code = elements.tactics.value;
             let result = gofmt(code);
             if (result.startsWith('error:')) {
                 console.error("gofmt: %s", result);
             } else {
-                elements.code.value = result;
+                elements.tactics.value = result;
             }
         };
 
@@ -352,11 +392,11 @@ export function main() {
             }
             resetPage();
             let config = {
-                avatarHP: AVATAR_MAX_HP,
-                avatarMP: AVATAR_MAX_MP,
+                avatarHP: gameSettings.avatarHP,
+                avatarMP: gameSettings.avatarMP,
                 rounds: NUM_ROUNDS,
             };
-            let code = elements.code.value;
+            let code = elements.tactics.value;
             let actions = runSimulation(config, code);
             let speed = parseInt(elements.speed.options[elements.speed.selectedIndex].value, 10);
             currentSimulationPlayer = new SimulationPlayer(actions);
@@ -366,17 +406,17 @@ export function main() {
         };
 
         document.addEventListener('keyup', function(e) {
-            let textareaFocused = (elements.code === document.activeElement);
+            let textareaFocused = (elements.tactics === document.activeElement);
             if (e.code === 'Space' && !textareaFocused) {
                 e.preventDefault();
                 handlePause();
             }
         });
         document.addEventListener('keydown', function(e) {
-            let textareaFocused = (elements.code === document.activeElement);
+            let textareaFocused = (elements.tactics === document.activeElement);
             if (e.code === 'Tab' && textareaFocused) {
                 e.preventDefault();
-                insertText(elements.code, '    ');
+                insertText(elements.tactics, '    ');
             }
         });
 
