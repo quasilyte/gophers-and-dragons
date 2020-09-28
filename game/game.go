@@ -48,8 +48,13 @@ func (st *State) Can(cardType CardType) bool {
 // Creep is a particular creep information.
 type Creep struct {
 	Type CreepType
-	HP   int
+
+	HP int
+
+	// Stun is a number of turns this creep is going to skip.
+	// You probably want to use Creep.IsStunned() instead of this.
 	Stun int
+
 	CreepStats
 }
 
