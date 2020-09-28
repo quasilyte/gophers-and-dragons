@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"runtime/debug"
-	"time"
 
 	"github.com/quasilyte/gophers-and-dragons/game"
 	"github.com/quasilyte/gophers-and-dragons/wasm/gamedata"
@@ -15,6 +14,7 @@ type Config struct {
 	AvatarHP int
 	AvatarMP int
 	Rounds   int
+	Seed     int64
 }
 
 func Run(config *Config, chooseCard func(game.State) game.CardType) []simstep.Action {
@@ -54,7 +54,7 @@ func newRunner(config *Config, chooseCard func(game.State) game.CardType) *runne
 		config:     config,
 		state:      newGameState(config),
 		chooseCard: chooseCard,
-		rand:       rand.New(rand.NewSource(time.Now().UnixNano())),
+		rand:       rand.New(rand.NewSource(config.Seed)),
 	}
 }
 

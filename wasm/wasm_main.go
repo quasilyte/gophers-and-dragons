@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"strings"
 	"syscall/js"
+	"time"
 
 	"github.com/quasilyte/gophers-and-dragons/game"
 	"github.com/quasilyte/gophers-and-dragons/wasm/gamedata"
@@ -181,11 +182,18 @@ func runSimulation(config js.Value, code string) (actions []simstep.Action, err 
 		return nil, errors.New("can't find proper ChooseCard definition")
 	}
 
+	seed := config.Get("seed")
 	simConfig := &sim.Config{
 		Rounds:   config.Get("rounds").Int(),
 		AvatarHP: config.Get("avatarHP").Int(),
 		AvatarMP: config.Get("avatarMP").Int(),
 	}
+	if seed.Type() == js.TypeNumber {
+		simConfig.Seed = int64(seed.Int())
+	} else {
+		simConfig.Seed = time.Now().UnixNano()
+	}
+
 	return sim.Run(simConfig, userFunc), nil
 }
 

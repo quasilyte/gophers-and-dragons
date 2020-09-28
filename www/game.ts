@@ -111,6 +111,7 @@ export function main() {
     let gameSettings = {
         avatarHP: 40,
         avatarMP: 20,
+        seed: null,
     }
 
     const NUM_ROUNDS = 10;
@@ -312,6 +313,9 @@ export function main() {
             if (x.avatarMP) {
                 gameSettings.avatarMP = x.avatarMP;
             }
+            if (x.seed) {
+                gameSettings.seed = x.seed;
+            }
         } catch (e) {
             console.error("bad settings: " + e)
         }
@@ -391,11 +395,11 @@ export function main() {
                 currentSimulationInterval = null;
             }
             resetPage();
-            let config = {
-                avatarHP: gameSettings.avatarHP,
-                avatarMP: gameSettings.avatarMP,
-                rounds: NUM_ROUNDS,
-            };
+            let config = {}
+            config["avatarHP"] = gameSettings.avatarHP;
+            config["avatarMP"] = gameSettings.avatarMP;
+            config["rounds"] = NUM_ROUNDS;
+            config["seed"] = gameSettings.seed;
             let code = elements.tactics.value;
             let actions = runSimulation(config, code);
             let speed = parseInt(elements.speed.options[elements.speed.selectedIndex].value, 10);
