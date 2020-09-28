@@ -69,6 +69,7 @@ export function main() {
         'button': {
             'run': document.getElementById('button_run') as HTMLInputElement,
             'pause': document.getElementById('button_pause') as HTMLInputElement,
+            'nextTurn': document.getElementById('button_next_turn') as HTMLInputElement,
             'format': document.getElementById('button_format') as HTMLInputElement,
             'share': document.getElementById('button_share') as HTMLInputElement,
         },
@@ -124,6 +125,7 @@ export function main() {
 
     let paused = false;
     let currentSimulationInterval = null;
+    let currentSimulationPlayer: SimulationPlayer = null;
 
     function setCreep(name: string, hp: number) {
         elements.creep.pic.src = `img/creep/${name}.png`;
@@ -266,6 +268,32 @@ export function main() {
         }
     }
 
+    class SimulationPlayer {
+        nextAction: number = 0;
+        actions: any[][];
+
+        constructor(actions: any[][]) {
+            this.actions = actions;
+        }
+
+        canPlayTurn(): boolean {
+            return this.nextAction < this.actions.length;
+        }
+
+        playTurn() {
+            for (let i = this.nextAction; i < this.actions.length; i++) {
+                this.nextAction++;
+                let a = this.actions[i];
+                if (a[0] == 'wait') {
+                    updateElementText(elements.status.turn, 1);
+                    break;
+                }
+                const [, ...tail] = a;
+                handlers[a[0]].apply(null, tail);
+            }
+        }
+    }
+
     function initGame() {
         let code = urlParams.get('code');
         if (code !== null) {
@@ -301,6 +329,12 @@ export function main() {
             cardLabels[i].addEventListener('mouseenter', cardDetailsHandler, false);
         }
 
+        elements.button.nextTurn.onclick = function(e) {
+            if (paused && currentSimulationPlayer.canPlayTurn()) {
+                currentSimulationPlayer.playTurn();
+            }
+        };
+
         elements.button.format.onclick = function(e) {
             let code = elements.code.value;
             let result = gofmt(code);
@@ -325,9 +359,10 @@ export function main() {
             let code = elements.code.value;
             let actions = runSimulation(config, code);
             let speed = parseInt(elements.speed.options[elements.speed.selectedIndex].value, 10);
+            currentSimulationPlayer = new SimulationPlayer(actions);
             console.log('starting applyActions with speed=%d', speed);
             console.log('actions:', actions);
-            applyActions(speed, actions);
+            applyActions(speed, currentSimulationPlayer);
         };
 
         document.addEventListener('keyup', function(e) {
@@ -406,25 +441,16 @@ export function main() {
         },
     };
 
-    function applyActions(interval: number, actions: any[][]) {
-        let nextAction = 0;
+    function applyActions(interval: number, player: SimulationPlayer) {
         currentSimulationInterval = setInterval(function() {
             if (paused) {
                 return;
             }
-            for (let i = nextAction; i < actions.length; i++) {
-                nextAction++;
-                let a = actions[i];
-                if (a[0] == 'wait') {
-                    updateElementText(elements.status.turn, 1);
-                    break;
-                }
-                const [, ...tail] = a;
-                handlers[a[0]].apply(null, tail);
-            }
-            if (nextAction >= actions.length) {
+            if (player.canPlayTurn()) {
+                player.playTurn();
+            } else {
                 clearInterval(currentSimulationInterval);
-                console.log('applied %d actions', actions.length);
+                console.log('applied %d actions', player.actions.length);
                 currentSimulationInterval = null;
             }
         }, interval);
