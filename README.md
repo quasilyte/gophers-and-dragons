@@ -12,5 +12,5 @@ You can read a [full manual](manual.md) to learn all game mechanics.
 
 ----
 
-This game is free and licensed under the <a href="https://github.com/quasilyte/gophers-and-dragons/blob/master/LICENSE">MIT license</a>.<br>
+This game is free and is licensed under the <a href="https://github.com/quasilyte/gophers-and-dragons/blob/master/LICENSE">MIT license</a>.<br>
 Artworks are taken from <a href="https://github.com/ashleymcnamara/gophers">github.com/ashleymcnamara/gophers</a>, they retain <a href="https://github.com/ashleymcnamara/gophers/blob/master/LICENSE">the original license</a>.
