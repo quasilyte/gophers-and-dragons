@@ -24,10 +24,7 @@ func calculateHealed(roll, current, max int) int {
 	healed := roll
 	afterHeal := current + roll
 	if afterHeal > max {
-		healed = max - afterHeal
-		if healed < 0 {
-			return 0
-		}
+		healed -= afterHeal - max
 	}
 	return healed
 }
