@@ -185,7 +185,7 @@ func (r *runner) runCreepAction(parried bool) {
 	r.emitRedLogf("%s deals %d damage", creep.Type.String(), damageRoll)
 }
 
-func (r *runner) runAvatarAction(cardType game.CardType, card game.CardStats) {
+func (r *runner) runAvatarAction(cardType game.CardType, card game.CardStats) bool {
 	creep := &r.state.Creep
 	avatar := &r.state.Avatar
 
@@ -193,7 +193,7 @@ func (r *runner) runAvatarAction(cardType game.CardType, card game.CardStats) {
 	if cardCount == 0 {
 		r.emitRedLogf("Tried to use unavailable card %s", cardType.String())
 		r.badMoves++
-		return
+		return false
 	}
 	if cardCount != -1 {
 		r.out = append(r.out, simstep.ChangeCardCount{
@@ -207,7 +207,7 @@ func (r *runner) runAvatarAction(cardType game.CardType, card game.CardStats) {
 		if avatar.MP < card.MP {
 			r.emitRedLogf("Not enough mana to use %s", cardType.String())
 			r.badMoves++
-			return
+			return false
 		}
 		avatar.MP -= card.MP
 		r.out = append(r.out, simstep.UpdateMP{Delta: -card.MP})
@@ -254,6 +254,8 @@ func (r *runner) runAvatarAction(cardType game.CardType, card game.CardStats) {
 	case game.CardRest, game.CardHeal:
 		r.avatarHeal(cardType, card)
 	}
+
+	return true
 }
 
 func (r *runner) avatarHeal(cardType game.CardType, card game.CardStats) {
@@ -296,7 +298,7 @@ func (r *runner) runTurn() bool {
 
 	cardType := r.chooseCard(*r.state)
 	card := gamedata.GetCardStats(cardType)
-	r.runAvatarAction(cardType, card)
+	cardIsPlayed := r.runAvatarAction(cardType, card)
 
 	if creep.HP <= 0 {
 		r.creepDefeated()
@@ -316,7 +318,7 @@ func (r *runner) runTurn() bool {
 			return false
 		}
 	}
-	if skipsAttack && cardType == game.CardParry {
+	if skipsAttack && cardType == game.CardParry && cardIsPlayed {
 		r.emitRedLogf("Tried to parry, but the enemy was not attacking")
 	}
 
