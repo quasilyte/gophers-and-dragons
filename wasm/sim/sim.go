@@ -3,6 +3,7 @@ package sim
 import (
 	"fmt"
 	"math/rand"
+	"runtime/debug"
 	"time"
 
 	"github.com/quasilyte/gophers-and-dragons/game"
@@ -57,7 +58,17 @@ func newRunner(config *Config, chooseCard func(game.State) game.CardType) *runne
 	}
 }
 
-func (r *runner) Run() []simstep.Action {
+func (r *runner) Run() (out []simstep.Action) {
+	defer func() {
+		rv := recover()
+		if rv == nil {
+			return // OK
+		}
+		out = append(out, simstep.RedLog{Message: "Panic: " + fmt.Sprint(rv)})
+		// Print stack trace to the JS console.
+		println(string(debug.Stack()))
+	}()
+
 	r.initWorld()
 	r.out = append(r.out, simstep.NextRound{})
 	for {
