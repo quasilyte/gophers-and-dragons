@@ -122,9 +122,18 @@ func runSimulation(config js.Value, code string) (actions []simstep.Action, err 
 
 	i.Use(map[string]map[string]reflect.Value{
 		"github.com/quasilyte/gophers-and-dragons/game": {
-			"State":     reflect.ValueOf((*game.State)(nil)),
-			"CardType":  reflect.ValueOf((*game.CardType)(nil)),
-			"CreepType": reflect.ValueOf((*game.CreepType)(nil)),
+			"State":          reflect.ValueOf((*game.State)(nil)),
+			"Avatar":         reflect.ValueOf((*game.Avatar)(nil)),
+			"AvatarStats":    reflect.ValueOf((*game.AvatarStats)(nil)),
+			"Card":           reflect.ValueOf((*game.Card)(nil)),
+			"CardStats":      reflect.ValueOf((*game.CardStats)(nil)),
+			"CardType":       reflect.ValueOf((*game.CardType)(nil)),
+			"Creep":          reflect.ValueOf((*game.Creep)(nil)),
+			"CreepStats":     reflect.ValueOf((*game.CreepStats)(nil)),
+			"CreepType":      reflect.ValueOf((*game.CreepType)(nil)),
+			"CreepTrait":     reflect.ValueOf((*game.CreepTrait)(nil)),
+			"CreepTraitList": reflect.ValueOf((*game.CreepTraitList)(nil)),
+			"IntRange":       reflect.ValueOf((*game.IntRange)(nil)),
 
 			"CreepCheepy": reflect.ValueOf(game.CreepCheepy),
 			"CreepImp":    reflect.ValueOf(game.CreepImp),
