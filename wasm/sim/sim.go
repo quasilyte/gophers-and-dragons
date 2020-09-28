@@ -296,7 +296,7 @@ func (r *runner) runTurn() bool {
 	creep := &r.state.Creep
 	avatar := &r.state.Avatar
 
-	cardType := r.chooseCard(*r.state)
+	cardType := r.chooseCard(cloneState(r.state))
 	card := gamedata.GetCardStats(cardType)
 	cardIsPlayed := r.runAvatarAction(cardType, card)
 
