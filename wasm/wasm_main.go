@@ -7,7 +7,6 @@ import (
 	"reflect"
 	"strings"
 	"syscall/js"
-	"time"
 
 	"github.com/quasilyte/gophers-and-dragons/game"
 	"github.com/quasilyte/gophers-and-dragons/wasm/gamedata"
