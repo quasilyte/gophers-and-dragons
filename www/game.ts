@@ -108,11 +108,18 @@ export function main() {
 
     const urlParams = new URLSearchParams(window.location.search);
 
+    let seed = parseInt(urlParams.get('seed'), 10);
+    if (isNaN(seed)) {
+        seed = null;
+    } else if (seed.toString() != urlParams.get('seed')) (
+        console.warn('seed overflow!')
+    );
+
     let gameSettings = {
         avatarHP: 40,
         avatarMP: 20,
-        seed: null,
-    }
+        seed,
+    };
 
     const NUM_ROUNDS = 10;
     const AVATAR_ID = urlParams.get('avatar') || rand(5);

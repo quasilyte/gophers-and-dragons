@@ -191,7 +191,7 @@ func runSimulation(config js.Value, code string) (actions []simstep.Action, err 
 	if seed.Type() == js.TypeNumber {
 		simConfig.Seed = int64(seed.Int())
 	} else {
-		simConfig.Seed = time.Now().UnixNano()
+		simConfig.Seed = sim.GetSeed()
 	}
 
 	return sim.Run(simConfig, userFunc), nil
