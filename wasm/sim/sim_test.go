@@ -1,7 +1,13 @@
 package sim
 
 import (
+	"fmt"
+	"math"
+	"reflect"
+	"strings"
 	"testing"
+
+	"github.com/quasilyte/gophers-and-dragons/game"
 )
 
 func TestCalculateHealed(t *testing.T) {
@@ -27,6 +33,37 @@ func TestCalculateHealed(t *testing.T) {
 		if have != test.want {
 			t.Errorf("roll=%d current=%d max=%d:\nhave: %d\nwant: %d",
 				test.roll, test.current, maxHP, have, test.want)
+		}
+	}
+}
+
+func TestRun(t *testing.T) {
+	tests := []struct {
+		seed int64
+		fn   func(game.State) game.CardType
+	}{
+		{1, func(state game.State) game.CardType { return game.CardRetreat }},
+		{2, func(state game.State) game.CardType { return game.CardAttack }},
+	}
+
+	for _, test := range tests {
+		config := &Config{
+			AvatarHP: 40,
+			AvatarMP: 20,
+			Rounds:   10,
+			Seed:     test.seed,
+		}
+		firstResult := Run(config, test.fn)
+		secondResult := Run(config, test.fn)
+
+		if !reflect.DeepEqual(firstResult, secondResult) {
+			builder := strings.Builder{}
+			builder.WriteString(fmt.Sprintf("seed=%d different results\n", test.seed))
+			firstLen, secondLen := len(firstResult), len(secondResult)
+			for i := 0; i < int(math.Min(float64(firstLen), float64(secondLen))); i++ {
+				builder.WriteString(fmt.Sprintf("%v\t\t%v\n", firstResult[i], secondResult[i]))
+			}
+			t.Error(builder.String())
 		}
 	}
 }
