@@ -313,9 +313,7 @@ export function main() {
             if (x.avatarMP) {
                 gameSettings.avatarMP = x.avatarMP;
             }
-            if (x.seed) {
-                gameSettings.seed = x.seed;
-            }
+            gameSettings.seed = x.seed || null;
         } catch (e) {
             console.error("bad settings: " + e)
         }
