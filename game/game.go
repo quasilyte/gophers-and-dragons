@@ -148,6 +148,18 @@ const (
 	CardParry
 )
 
+var CardTypes = [...]CardType{
+	CardAttack,
+	CardMagicArrow,
+	CardRetreat,
+	CardRest,
+	CardPowerAttack,
+	CardFirebolt,
+	CardStun,
+	CardHeal,
+	CardParry,
+}
+
 // CreepType is an enum-like type for creeps.
 type CreepType int
 

@@ -108,7 +108,9 @@ func (r *runner) initWorld() {
 
 func (r *runner) initDeck() {
 	deck := r.state.Deck
-	for typ, cardStats := range gamedata.Cards {
+	for _, typ := range game.CardTypes {
+		cardStats := gamedata.Cards[typ]
+
 		card := game.Card{
 			Type:      typ,
 			CardStats: cardStats,
