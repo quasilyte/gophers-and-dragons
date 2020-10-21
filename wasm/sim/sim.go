@@ -110,7 +110,7 @@ func (r *runner) initWorld() {
 func (r *runner) initDeck() {
 	deck := r.state.Deck
 
-	cardTypes := make([]game.CardType, 0, len(deck))
+	cardTypes := make([]game.CardType, 0, len(gamedata.Cards))
 	for typ := range gamedata.Cards {
 		cardTypes = append(cardTypes, typ)
 	}
