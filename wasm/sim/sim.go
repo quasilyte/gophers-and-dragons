@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"runtime/debug"
+	"sort"
 
 	"github.com/quasilyte/gophers-and-dragons/game"
 	"github.com/quasilyte/gophers-and-dragons/wasm/gamedata"
@@ -108,7 +109,14 @@ func (r *runner) initWorld() {
 
 func (r *runner) initDeck() {
 	deck := r.state.Deck
-	for _, typ := range game.CardTypes {
+
+	cardTypes := make([]game.CardType, 0, len(deck))
+	for typ := range gamedata.Cards {
+		cardTypes = append(cardTypes, typ)
+	}
+	sort.Slice(cardTypes, func(i, j int) bool { return cardTypes[i] < cardTypes[j] })
+
+	for _, typ := range cardTypes {
 		cardStats := gamedata.Cards[typ]
 
 		card := game.Card{
