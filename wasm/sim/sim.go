@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"runtime/debug"
 	"sort"
+	"time"
 
 	"github.com/quasilyte/gophers-and-dragons/game"
 	"github.com/quasilyte/gophers-and-dragons/wasm/gamedata"
@@ -406,4 +407,8 @@ func (r *runner) emitRedLogf(format string, args ...interface{}) {
 
 func (r *runner) emitGreenLogf(format string, args ...interface{}) {
 	r.out = append(r.out, simstep.GreenLog{Message: fmt.Sprintf(format, args...)})
+}
+
+func GetSeed() int64 {
+	return time.Now().UnixNano() % 1_000_000_000_000 // Preventing js number overflow
 }
